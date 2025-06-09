@@ -1,0 +1,22 @@
+{
+    "name": "Auto Unassign & Subject Tagger",
+    "alias": "autounassign",
+    "description": "This module automatically unassigns the agent from a conversation when a customer replies. The conversation becomes active again and can be picked up by another agent. Additionally, it updates the email subject by adding (Ticket#<ID> <original subject>) to help support teams track and manage tickets more efficiently.",
+    "version": "1.0.0",
+    "detailsUrl": "",
+    "author": "Juon Junior",
+    "authorUrl": "",
+    "requiredAppVersion": "1.0.2",
+    "license": "AGPL-3.0",
+    "keywords": [],
+    "active": 0,
+    "order": 0,
+    "providers": [
+        "Modules\\AutoUnassign\\Providers\\AutoUnassignServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

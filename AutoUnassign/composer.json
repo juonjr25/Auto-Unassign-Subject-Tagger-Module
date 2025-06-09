@@ -1,0 +1,25 @@
+{
+    "name": "freescout/autounassign",
+    "description": "",
+    "authors": [
+        {
+            "name": "FreeScout",
+            "email": "support@freescout.net"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\AutoUnassign\\Providers\\AutoUnassignServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\AutoUnassign\\": ""
+        }
+    }
+}
