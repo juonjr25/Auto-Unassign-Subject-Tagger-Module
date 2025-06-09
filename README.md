@@ -3,11 +3,25 @@
 This module automatically unassigns the agent from a conversation when a customer replies. The conversation becomes active again and can be picked up by another agent. Additionally, it updates the email subject by adding (Ticket#<ID> <original___subject>) to help support teams track and manage tickets more efficiently.
 
 ## Langkah 1: Download Module
-Clone via Git
+
+### Catatan: 
+Lokasi direktori fresscout/Modules/ bisa berbeda tergantung di mana kamu menginstal Fresscout.
+Contoh umum direktori root Fresscout:
+
+    /var/www/html/fresscout/
+
+    /opt/fresscout/
+
+    /home/user/public_html/fresscout/
+
+Pastikan kamu berada di direktori Modules sesuai dengan lokasi instalasi Fresscout kamu sebelum menjalankan perintah di bawah ini.
+
+
+### Clone via Git
 
     git clone https://github.com/juonjr25/Auto-Unassign-Subject-Tagger-Module.git AutoUnassign
 
-## Langkah 2: Clear Cache dan Autoload
+## Langkah 2: Clear Cache
 
     php artisan config:clear
     php artisan cache:clear
