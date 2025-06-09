@@ -1,6 +1,6 @@
 # Auto Unassign Subject Tagger Module
 
-This module automatically unassigns the agent from a conversation when a customer replies. The conversation becomes active again and can be picked up by another agent. Additionally, it updates the email subject by adding (Ticket#<ID> <original subject>) to help support teams track and manage tickets more efficiently.
+This module automatically unassigns the agent from a conversation when a customer replies. The conversation becomes active again and can be picked up by another agent. Additionally, it updates the email subject by adding (Ticket#<ID> <original___subject>) to help support teams track and manage tickets more efficiently.
 
 ## Langkah 1: Download Module
 Clone via Git
