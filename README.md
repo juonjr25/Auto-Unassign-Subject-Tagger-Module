@@ -19,7 +19,11 @@ Pastikan kamu berada di direktori Modules sesuai dengan lokasi instalasi Fressco
 
 ### Clone via Git
 
-    git clone https://github.com/juonjr25/Auto-Unassign-Subject-Tagger-Module.git AutoUnassign
+    sudo git clone --filter=blob:none --sparse https://github.com/juonjr25/Auto-Unassign-Subject-Tagger-Module.git AutoUnassign
+    cd AutoUnassign
+    sudo git sparse-checkout init --cone
+    sudo git sparse-checkout set AutoUnassign
+    sudo mv AutoUnassign/* . && sudo rmdir AutoUnassign
 
 ## Langkah 2: Clear Cache
 
