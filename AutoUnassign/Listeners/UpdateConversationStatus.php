@@ -95,10 +95,18 @@ class UpdateConversationStatus
 
     private static function buildCleanBlock(string $html, string $type): string
     {
+        // libxml_use_internal_errors(true);
+        // $dom = new \DOMDocument('1.0', 'UTF-8');
+        // $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+        // $xp  = new \DOMXPath($dom);
+
         libxml_use_internal_errors(true);
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
-        $xp  = new \DOMXPath($dom);
+
+$dom = new \DOMDocument('1.0', 'UTF-8');
+// Tambahkan deklarasi encoding UTF-8 langsung di depan HTML
+$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+$xp  = new \DOMXPath($dom);
 
         if ($type === self::TYPE_ASSIGN_UPDATE) {
             $table = $xp->query('//table[contains(@id,"templateSection")]')->item(0);
