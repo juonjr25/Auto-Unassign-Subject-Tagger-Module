@@ -65,17 +65,32 @@ class UpdateConversationStatus
         $thread->save();
     }
 
-    private function detectTemplateType(string $html): string
-    {
-        $lower = strtolower($html);
-        if (strpos($lower, '--reply above this line to respond') !== false && strpos($lower, 'you have been assigned') !== false) {
-            return self::TYPE_ASSIGN_UPDATE;
-        }
-        if (strpos($lower, 'internal') !== false) {
-            return self::TYPE_INTERNAL;
-        }
-        return self::TYPE_NOTE;
+
+private function detectTemplateType(string $html): string {
+    $lower = strtolower($html);
+
+    // Trigger utama
+    $hasReplyTrigger = strpos($lower, '--reply above this line to respond') !== false;
+
+    // Logic 1: Assign Update (lama + tambahan kamu)
+    if ($hasReplyTrigger && (
+        strpos($lower, 'you have been assigned') !== false ||
+        strpos($lower, 'this ticket has been updated by wowrack technologies') !== false ||
+        strpos($lower, 'a response to this ticket has been received through the email connector') !== false ||
+        strpos($lower, 'this ticket has been updated by psa admin') !== false ||
+        strpos($lower, 'wowrack monitoring team') !== false
+    )) {
+        return self::TYPE_ASSIGN_UPDATE;
     }
+
+    // Logic 2: Internal Note — cek apakah ini "Internal Only"
+    if (strpos($lower, '--reply above this line to respond (internal only)') !== false) {
+        return self::TYPE_INTERNAL;
+    }
+
+    // Default: Note biasa
+    return self::TYPE_NOTE;
+}
 
     private function maybePrependTicketNumber(Thread $thread, \App\Conversation $conv): void
     {
