@@ -30,7 +30,7 @@ class UpdateConversationStatus
         $conv              = $event->conversation;
         $conv->user_id     = null;
         //$conv->status      = \App\Conversation::STATUS_ACTIVE;
-        $systemUser = \App\User::find(2); // pastikan user ID 2 ada
+        $systemUser = \App\User::find(12); // pastikan user ID 2 ada
         $conv->changeStatus(\App\Conversation::STATUS_ACTIVE, $systemUser);
         $conv->updateFolder();
         
