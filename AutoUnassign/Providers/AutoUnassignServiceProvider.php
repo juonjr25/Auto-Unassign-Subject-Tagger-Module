@@ -29,6 +29,17 @@ class AutoUnassignServiceProvider extends ServiceProvider
         $this->registerFactories();
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
         $this->hooks();
+
+        // Tambahkan ini agar folder public link ke /public/modules/AutoUnassign
+        $source = base_path('Modules/AutoUnassign/public');
+        $target = public_path('modules/autounassign');
+        if (!file_exists($target)) {
+            try {
+                symlink($source, $target);
+            } catch (\Exception $e) {
+                \File::copyDirectory($source, $target);
+            }
+        }
     }
 
     /**
@@ -41,6 +52,13 @@ class AutoUnassignServiceProvider extends ServiceProvider
     public function hooks()
     {
         Event::listen(CustomerReplied::class, UpdateConversationStatus::class);
+
+        // Tambahkan JS ke halaman conversation
+        \Eventy::addFilter('javascripts', function ($javascripts) {
+            $javascripts[] = \Module::getPublicPath('autounassign') . '/js/custom_reply.js';
+            \Log::info('[AutoUnassign] JS Injected'); // opsional log
+            return $javascripts;
+        });
     }
 
     /**

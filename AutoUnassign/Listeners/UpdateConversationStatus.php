@@ -16,6 +16,7 @@ namespace Modules\AutoUnassign\Listeners;
 
 use App\Events\CustomerReplied;
 use App\Thread;
+use Modules\AutoUnassign\Helpers\MailHelper;
 
 class UpdateConversationStatus
 {
@@ -30,7 +31,7 @@ class UpdateConversationStatus
         $conv              = $event->conversation;
         $conv->user_id     = null;
         //$conv->status      = \App\Conversation::STATUS_ACTIVE;
-        $systemUser = \App\User::find(12); // pastikan user ID 2 ada
+        $systemUser = \App\User::find(12); // pastikan user ID 12 ada
         $conv->changeStatus(\App\Conversation::STATUS_ACTIVE, $systemUser);
         $conv->updateFolder();
         
@@ -77,8 +78,7 @@ private function detectTemplateType(string $html): string {
         strpos($lower, 'you have been assigned') !== false ||
         strpos($lower, 'this ticket has been updated by wowrack technologies') !== false ||
         strpos($lower, 'a response to this ticket has been received through the email connector') !== false ||
-        strpos($lower, 'this ticket has been updated by psa admin') !== false ||
-        strpos($lower, 'wowrack monitoring team') !== false
+        strpos($lower, 'this ticket has been updated by psa admin') !== false
     )) {
         return self::TYPE_ASSIGN_UPDATE;
     }
@@ -92,16 +92,29 @@ private function detectTemplateType(string $html): string {
     return self::TYPE_NOTE;
 }
 
+    // private function maybePrependTicketNumber(Thread $thread, \App\Conversation $conv): void
+    // {
+    //     preg_match('/^Subject:\\s*(.+)$/mi', $thread->headers ?? '', $m);
+    //     $subRaw = trim($m[1] ?? '');
+    //     if (preg_match('/(?:(?:CW|Wowrack)?\s*(?:ID\s*)?(?:Support\s*)?Ticket\s*[-#:]?|CW\s*Ticket\s*[-#:]?)\s*(\d{5,8})/i', $subRaw, $mm) && strpos($conv->subject, "Ticket#{$mm[1]}") === false) {
+    //         $conv->subject = "Ticket#{$mm[1]} {$conv->subject}";
+    //         $conv->save();
+    //     }
+    // }
+
     private function maybePrependTicketNumber(Thread $thread, \App\Conversation $conv): void
     {
         preg_match('/^Subject:\\s*(.+)$/mi', $thread->headers ?? '', $m);
-        $subRaw = trim($m[1] ?? '');
-        // if (preg_match('/(?:Ticket\\s*[-#]?|CW\\s*Ticket\\s*[-#]?)(\\d{5,8})/i', $subRaw, $mm) && strpos($conv->subject, "Ticket#{$mm[1]}") === false) {
-        //     $conv->subject = "Ticket#{$mm[1]} {$conv->subject}";
-        //     $conv->save();
-        // }
-        if (preg_match('/(?:(?:CW|Wowrack)?\s*(?:ID\s*)?(?:Support\s*)?Ticket\s*[-#:]?|CW\s*Ticket\s*[-#:]?)\s*(\d{5,8})/i', $subRaw, $mm) && strpos($conv->subject, "Ticket#{$mm[1]}") === false) {
-            $conv->subject = "Ticket#{$mm[1]} {$conv->subject}";
+        $rawSubject = trim($m[1] ?? '');
+        $decodedSubject = MailHelper::decodeMimeHeader($rawSubject);
+
+        if (stripos($conv->subject, 'ticket#') !== false) {
+            return;
+        }
+
+        if (preg_match('/(?:(?:CW|Wowrack)?\s*(?:ID\s*)?(?:Support\s*)?Ticket\s*[-#:]?|CW\s*Ticket\s*[-#:]?)\s*(\d{5,8})/i', $decodedSubject, $mm)) {
+            $ticketNum = $mm[1];
+            $conv->subject = "Ticket#{$ticketNum} {$conv->subject}";
             $conv->save();
         }
     }
